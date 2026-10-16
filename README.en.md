@@ -11,6 +11,12 @@
 ![Target](https://img.shields.io/badge/target-ESP32--S3-green)
 ![Host](https://img.shields.io/badge/host-Windows%2010-0078D4)
 ![Docs](https://img.shields.io/badge/docs-MIT-lightgrey)
+[![docs-check](https://github.com/Barrylaiheng/ai-esp32-playbook/actions/workflows/docs-check.yml/badge.svg)](https://github.com/Barrylaiheng/ai-esp32-playbook/actions/workflows/docs-check.yml)
+
+> **What this method produced:** [`folo-ai-passport-voice-agent`](https://github.com/Barrylaiheng/folo-ai-passport-voice-agent)
+> is an open-source project built on the discipline in section 6 and the Windows child-process rules
+> above (compare its `AGENTS.md`). The ESP32-S3 product firmware itself (`dada-launcher`) is not
+> open source — every screenshot and log in this repo comes from it.
 
 > ⚠️ **The Chinese README is the source of truth.** This English page is a condensed version:
 > conclusions, checklist and templates only. For the full narrative, evidence and the 10 disproved

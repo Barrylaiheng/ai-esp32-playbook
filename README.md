@@ -13,6 +13,11 @@
 ![Target](https://img.shields.io/badge/target-ESP32--S3-green)
 ![Platform](https://img.shields.io/badge/host-Windows%2010-0078D4)
 ![Docs License](https://img.shields.io/badge/docs-MIT-lightgrey)
+[![docs-check](https://github.com/Barrylaiheng/ai-esp32-playbook/actions/workflows/docs-check.yml/badge.svg)](https://github.com/Barrylaiheng/ai-esp32-playbook/actions/workflows/docs-check.yml)
+
+> **这套方法做出来的东西**：[`folo-ai-passport-voice-agent`](https://github.com/Barrylaiheng/folo-ai-passport-voice-agent)
+> 是照着本文第 8 节「人机分工」和 Windows 子进程纪律做出来的开源项目（可直接对照它的 `AGENTS.md`）；
+> ESP32-S3 侧的产品固件 `dada-launcher` 尚未开源——本文所有截图与日志都出自它。
 
 ---
 

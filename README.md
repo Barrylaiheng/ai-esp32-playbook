@@ -1,6 +1,6 @@
 # 用 AI Agent 开发 ESP32 固件：一条可复制的工程路线
 
-**中文** | [English](./README.en.md)
+**中文（事实源）** | [English (精简版)](./README.en.md)
 
 > 我在 Windows 上用 AI 编程助手（WorkBuddy）从零做了一个跑在 ESP32-S3 上的真实产品固件。
 > 这篇文章不是「AI 帮我写代码」的兴奋分享，而是**把它跑成一条稳定流水线**的过程记录——

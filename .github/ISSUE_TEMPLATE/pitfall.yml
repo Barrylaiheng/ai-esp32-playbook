@@ -1,0 +1,97 @@
+name: 补充一个"坑"
+description: 分享你在「用 AI 助手开发嵌入式」过程中踩到的坑（被证伪的假设同样欢迎）
+title: "[坑] "
+labels: ["pitfall"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢补充！**"我试过 X 但没用"和"根因是 Y"同样有价值。**
+        本文最有价值的部分就是这张越来越长的坑清单。
+
+  - type: input
+    id: env-host
+    attributes:
+      label: AI 宿主 / 工具
+      description: 例如 WorkBuddy 5.8.x / Cursor / Claude Code / Codex
+      placeholder: WorkBuddy
+    validations:
+      required: true
+
+  - type: input
+    id: env-os-idf
+    attributes:
+      label: 操作系统 + ESP-IDF / 工具链版本
+      placeholder: Windows 10 19045 / ESP-IDF v6.0.1 / xtensa-esp-elf 15.2.0_20251204
+    validations:
+      required: true
+
+  - type: input
+    id: env-board
+    attributes:
+      label: 芯片 / 开发板
+      placeholder: ESP32-S3-R8 / 某品牌 3.5 寸带触摸模块
+    validations:
+      required: false
+
+  - type: textarea
+    id: symptom
+    attributes:
+      label: 现象
+      description: 一句话说清楚发生了什么，并贴关键日志
+      render: text
+      placeholder: |
+        构建跑到一半不动，控制台无输出，也不退出：
+        [~700/1866] Completed 'bootloader'
+        （然后没有然后了）
+    validations:
+      required: true
+
+  - type: textarea
+    id: diagnosis
+    attributes:
+      label: 定位过程（含被证伪的假设）
+      description: 试过什么、哪些被排除。被证伪的部分同样重要
+      placeholder: |
+        1. 怀疑管道死锁 → 改成直写文件 → 无效 ✗
+        2. 怀疑杀软 → 直读它的日志库，无相关记录 → 无效 ✗
+        3. 唯一变量实验：手动双击 vs 经 AI 工具 → 手动成功、工具必卡 ✅
+    validations:
+      required: true
+
+  - type: textarea
+    id: rootcause
+    attributes:
+      label: 根因（一句话）
+      placeholder: AI 宿主的子进程沙箱在密集创建编译进程时挂起 gcc
+    validations:
+      required: true
+
+  - type: textarea
+    id: fix
+    attributes:
+      label: 处置 / 规避方式（可复现的最小步骤）
+      placeholder: |
+        1. 把构建搬到与 AI 助手无血缘关系的常驻进程
+        2. AI 侧只写 build.request / 读 build.status
+    validations:
+      required: true
+
+  - type: dropdown
+    id: verified
+    attributes:
+      label: 是否已在本机复现并验证
+      options:
+        - 是，已在本机复现并验证
+        - 部分验证
+        - 否，仅推测（请在下方说明依据）
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: 补充说明
+      description: 是否愿意补 PR？有没有相关的上游 issue / 文章？
+    validations:
+      required: false

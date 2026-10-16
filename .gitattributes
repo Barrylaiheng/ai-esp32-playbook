@@ -1,0 +1,20 @@
+# Normalize line endings so the .cmd / .vbs templates stay usable on Windows
+*.cmd   text eol=crlf
+*.bat   text eol=crlf
+*.vbs   text eol=crlf
+*.ps1   text eol=crlf
+
+# Everything else: LF
+*.md    text eol=lf
+*.py    text eol=lf
+*.json  text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+
+# Keep binaries untouched
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.bmp   binary
+*.webp  binary
+*.zip   binary

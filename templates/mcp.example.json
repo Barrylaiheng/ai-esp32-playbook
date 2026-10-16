@@ -1,0 +1,25 @@
+{
+  "_comment": "MCP 客户端配置示例。要点：把「知识源」和「动作源」分开配。",
+  "_comment2": "知识源 = 让 AI 读到真文档，减少 API 幻觉；动作源 = 让 AI 真的能建、能烧、能看串口。",
+  "mcpServers": {
+    "esp-idf-tools": {
+      "_comment": "动作源：由 ESP-IDF v6.0+ 内置的本地 MCP server 提供，暴露 build / flash / set-target 等工具。",
+      "command": "idf.py",
+      "args": ["mcp-server"],
+      "env": {
+        "IDF_MCP_WORKSPACE_FOLDER": "${workspaceFolder}"
+      }
+    },
+    "esp-idf-docs": {
+      "_comment": "知识源：乐鑫官方文档 MCP（远程）。让 AI 基于真文档写代码，而不是靠记忆编 API。",
+      "_comment2": "具体地址与鉴权方式请以官方文档为准：https://developer.espressif.com/",
+      "url": "https://mcp.espressif.com/docs"
+    },
+    "esp32-serial": {
+      "_comment": "动作源：串口监控/烧录。若你的宿主已有独立的烧录工具，可只保留其中一个，避免两者抢串口。",
+      "_comment2": "注意：串口同一时刻只能被一个进程占用。多个工具并存时要靠分工规避冲突。",
+      "command": "<your-flasher-or-serial-mcp>",
+      "args": []
+    }
+  }
+}

@@ -17,8 +17,9 @@
 | `build-daemon-hidden.vbs` | 以**隐藏窗口**拉起守护进程 |
 | `build-daemon-autostart.vbs` | 开机自启垫片（清残锁 → 拉起） |
 | `install-build-daemon.cmd` | **一次性安装器**：停旧实例 → 清锁 → 装自启 → 立即启动 |
-| `build-quiet.cmd` | 实际构建脚本：设环境变量 → reconfigure → 经 `run_ninja.py` 跑 ninja |
+| `build-quiet.cmd` | 实际构建脚本：设环境变量 → **字体守卫** → reconfigure → 经 `run_ninja.py` 跑 ninja |
 | `run_ninja.py` | **关键**：以 `stdin=DEVNULL` 拉起 ninja，规避隐藏控制台的 stdin 继承坑 |
+| `ensure_fonts.py` | **可选**：构建前守卫——生成的字体 `.c` 缺失/过期就重生成，失败则以 `EXIT=98` 拒绝构建（见 [`../../docs/04-build-speed.md`](../../docs/04-build-speed.md) 第五节） |
 
 ## 安装步骤
 
@@ -35,8 +36,13 @@
    __TOOLCHAIN_BIN__    xtensa 工具链 bin 目录
    __CMAKE_BIN__        cmake bin 目录
    __NINJA_BIN__        ninja 目录
+   __NODEJS_BIN__       nodejs 目录（守卫重生成字体要用 npx lv_font_conv；
+                        不用字体守卫可删掉 build-quiet.cmd 里那行 PATH）
 
 3. 双击 install-build-daemon.cmd   ← 必须由人在沙箱外执行
+
+4. 若使用字体守卫：把 ensure_fonts.py 放到 tools/ 下，并按文件头 CONFIG 块
+   配置字体集（生成脚本 / 输出 .c / TTF 目录）与可用 python 候选。
 ```
 
 之后每次开机自动在场，**不需要再点任何东西**。

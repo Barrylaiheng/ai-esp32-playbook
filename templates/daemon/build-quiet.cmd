@@ -8,15 +8,18 @@ rem  ninja waits for pipe EOF. Redirecting output straight to a plain file
 rem  (a normal file handle, not a pipe) removes that whole class of risk.
 rem
 rem  STEP 1: replace __IDF_PATH__, __IDF_TOOLS_PATH__, __PYTHON_ENV__,
-rem          __TOOLCHAIN_BIN__ and __PROJECT_DIR__ with your own values.
+rem          __TOOLCHAIN_BIN__, __NODEJS_BIN__ and __PROJECT_DIR__ with your own.
 rem  STEP 2: keep ALL comments/echo text in this file ASCII-only.
 rem          cmd.exe parses this file using the OEM codepage (GBK on zh-CN),
 rem          so non-ASCII bytes in comments can be mis-parsed and executed.
-rem
+rem  STEP 3 (optional): the pre-build font guard below is a no-op unless your
+rem          project generates font subsets. Delete the guard block and the
+rem          nodejs PATH line if it does not.
+
 rem  Usage:
 rem    build-quiet.cmd          incremental build
 rem    build-quiet.cmd clean    fullclean, then full build
-rem
+
 rem  After it finishes, read build.log; the script writes EXIT=code at the end.
 rem ===========================================================================
 setlocal
@@ -28,7 +31,8 @@ set IDF_TOOLS_PATH=__IDF_TOOLS_PATH__
 set ESP_IDF_VERSION=__IDF_VERSION__
 set IDF_MAINTAINER=1
 set IDF_PYTHON_ENV_PATH=__PYTHON_ENV__
-set PATH=__TOOLCHAIN_BIN__;__CMAKE_BIN__;__NINJA_BIN__;%PATH%
+rem nodejs on PATH so font regeneration (npx lv_font_conv) works under the daemon
+set PATH=__NODEJS_BIN__;__TOOLCHAIN_BIN__;__CMAKE_BIN__;__NINJA_BIN__;%PATH%
 
 set PY=__PYTHON_ENV__\Scripts\python.exe
 set PROJ=__PROJECT_DIR__
@@ -44,6 +48,17 @@ if /i "%~1"=="clean" (
     echo --- fullclean --- >> "%LOG%"
     "%PY%" "%IDF_PATH%\tools\idf.py" -C "%PROJ%" fullclean >> "%LOG%" 2>&1
 )
+
+rem ---- pre-build guard: regenerate stale font subsets (no-op when fresh) ----
+rem CMake add_custom_command is blocked on IDF v6.0.1 by the reconfigure
+rem bug (quoted IDF_VER in build_properties.temp.cmake), so generated font
+rem .c files are guarded at build time instead: missing or older than their
+rem generator/TTF inputs -> regenerate BEFORE compiling. Fast mtime check,
+rem no npx call in the common case. Exit 98 (not 1) so build.status readers
+rem can tell "guard refused" from "compiler failed".
+echo --- ensure fonts up to date (pre-build guard) --- >> "%LOG%"
+"%PY%" "%PROJ%\tools\ensure_fonts.py" >> "%LOG%" 2>&1
+if errorlevel 1 goto font_fail
 
 rem idf.py does NOT accept -j; reconfigure once (to refresh build.ninja),
 rem then drive ninja directly so we can control the job count.
@@ -62,3 +77,9 @@ set RC=%ERRORLEVEL%
 echo EXIT=%RC% >> "%LOG%"
 echo EXIT=%RC%
 exit /b %RC%
+
+:font_fail
+echo FONT_GUARD_FAILED >> "%LOG%"
+echo EXIT=98 >> "%LOG%"
+echo EXIT=98
+exit /b 98

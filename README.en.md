@@ -78,6 +78,8 @@ always pass `CREATE_NO_WINDOW` **and** redirect stdin/stdout/stderr.
 8. **UI iteration must close the loop until the agent can see it**: edit → render → screenshot → review → repeat.
 9. Before reusing a component: **check its license, then hunt for hidden dependencies** its CMakeLists never declared.
 10. **Humans own architecture and acceptance; the agent owns typing.** Anything that ships wrong is the human's responsibility.
+11. **Treat AI optimization advice as hypotheses, not conclusions.** Its root-cause claims are the least reliable part — measure, quantify, check for conflicts with what you already built (see [`docs/04`](docs/04-build-speed.md)).
+12. **For snapshot/golden-image tests, the first suspect is always an unfrozen time source.** When a gate false-alarms, look at the environment inputs before the code under test (see [`docs/05`](docs/05-visual-regression.md)).
 
 ## Reusable checklist
 
@@ -114,12 +116,34 @@ always pass `CREATE_NO_WINDOW` **and** redirect stdin/stdout/stderr.
 - [ ] After major incidents, write a **public post-mortem** and distill it into a checklist.
 - [ ] One milestone per plan execution; on failure **go back to planning**.
 
+**Build speed (details: [`docs/04`](docs/04-build-speed.md))**
+
+- [ ] `IDF_CCACHE_ENABLE=1`, and default the request word to `inc` — `full`/`clean` is a deliberate choice.
+- [ ] Gate reconfigure and ldgen with **mtime checks** — prove "nothing changed" instead of re-checking everything.
+- [ ] Generated sources (fonts/assets) get a **pre-build guard**: regenerate when stale, **refuse the build** on failure (dedicated exit code).
+- [ ] UI iteration lives in the PC simulator; firmware builds are for final integration only.
+- [ ] AI optimization advice: hypothesis first — measure, quantify, check conflicts.
+
+**Regression gates & snapshot tests (details: [`docs/05`](docs/05-visual-regression.md))**
+
+- [ ] Golden refs committed, tolerance defaults to zero, **explicit `-UpdateRefs`** update semantics.
+- [ ] Compare with per-channel masks; **never use `getbbox()` to decide "two images are equal"** (it under-reports on RGBA).
+- [ ] Every gate gets a **mutation test** (corrupt a ref → the gate must FAIL). An untested gate is no gate.
+- [ ] Freeze **all environment inputs** in screenshot mode (clock / battery / signal / network) — time first.
+
+**Debugging "works at the office, dead at home" (details: [`docs/06`](docs/06-offline-fallback-case.md))**
+
+- [ ] Draw the state machine, ask each layer "who is it waiting for?", find the layer that is **waited on forever**.
+- [ ] Fallback policy: present options, **let the human decide** — the agent does not pick product behavior.
+- [ ] Fallback must not kill the self-healing path — "wait somewhere else" beats "give up".
+- [ ] Never infer "synced/connected" from a threshold (an RTC retention domain will lie); use a **sticky flag**.
+
 ## Templates
 
 | File | Usage |
 | --- | --- |
 | [`templates/AGENTS.md`](templates/AGENTS.md) | Copy to your repo root; fill in "what this repo is / directory conventions / environment notes" |
-| [`templates/daemon/`](templates/daemon/) | The six daemon files. **Replace the placeholders at the top of each file**, then double-click `install-build-daemon.cmd` once |
+| [`templates/daemon/`](templates/daemon/) | The six daemon files **plus the font guard**. **Replace the placeholders at the top of each file**, then double-click `install-build-daemon.cmd` once |
 | [`templates/mcp.example.json`](templates/mcp.example.json) | How to configure an MCP client (knowledge source and action source separately) |
 
 ```
@@ -131,7 +155,10 @@ Daily    : agent writes build.request = "inc" | "full"
 
 Full walkthroughs (Chinese): [`docs/01-build-hang-postmortem.md`](docs/01-build-hang-postmortem.md) ·
 [`docs/02-ui-simulator-workflow.md`](docs/02-ui-simulator-workflow.md) ·
-[`docs/03-component-reuse.md`](docs/03-component-reuse.md).
+[`docs/03-component-reuse.md`](docs/03-component-reuse.md) ·
+[`docs/04-build-speed.md`](docs/04-build-speed.md) ·
+[`docs/05-visual-regression.md`](docs/05-visual-regression.md) ·
+[`docs/06-offline-fallback-case.md`](docs/06-offline-fallback-case.md).
 
 ## Known limitations
 

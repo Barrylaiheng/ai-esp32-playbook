@@ -158,6 +158,7 @@ Full walkthroughs (Chinese): [`docs/01-build-hang-postmortem.md`](docs/01-build-
 [`docs/03-component-reuse.md`](docs/03-component-reuse.md) ·
 [`docs/04-build-speed.md`](docs/04-build-speed.md) ·
 [`docs/05-visual-regression.md`](docs/05-visual-regression.md) ·
+[`docs/07-vendored-lib-host-harness.md`](docs/07-vendored-lib-host-harness.md) ·
 [`docs/06-offline-fallback-case.md`](docs/06-offline-fallback-case.md).
 
 ## Known limitations

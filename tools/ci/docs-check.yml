@@ -1,0 +1,28 @@
+name: docs-check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check relative links in Markdown
+        run: python tools/check_links.py
+      - name: Check .cmd templates are ASCII-only
+        run: |
+          # zh-CN Windows parses .cmd as GBK; non-ASCII bytes become commands.
+          find templates -name '*.cmd' -o -name '*.vbs' | while read -r f; do
+            if LC_ALL=C grep -q '[^ -~]' "$f"; then
+              echo "::error file=$f::non-ASCII bytes in script (must be ASCII-only)"
+              exit 1
+            fi
+          done
+          echo "OK: all templates are ASCII-only"

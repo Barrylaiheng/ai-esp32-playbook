@@ -80,6 +80,8 @@ always pass `CREATE_NO_WINDOW` **and** redirect stdin/stdout/stderr.
 10. **Humans own architecture and acceptance; the agent owns typing.** Anything that ships wrong is the human's responsibility.
 11. **Treat AI optimization advice as hypotheses, not conclusions.** Its root-cause claims are the least reliable part — measure, quantify, check for conflicts with what you already built (see [`docs/04`](docs/04-build-speed.md)).
 12. **For snapshot/golden-image tests, the first suspect is always an unfrozen time source.** When a gate false-alarms, look at the environment inputs before the code under test (see [`docs/05`](docs/05-visual-regression.md)).
+13. **For a performance problem, first ask "is it doing work it shouldn't?", *then* "is that work fast enough?"** Both of my wins (first-paint 353→131ms, thumbnail 230→15ms per image) came from **deleting a useless action**, not from speeding anything up (see [`docs/10`](docs/10-perf-attribution-discipline.md)).
+14. **List/grid recycling: bind an item's identity to the viewport coordinate, never to the data index.** Bind it wrong and the symptom is not "a bit slow" — it's **the whole screen blanking on every row crossed** (see [`docs/09`](docs/09-list-view-recycling-scope.md)).
 
 ## Reusable checklist
 
@@ -159,7 +161,10 @@ Full walkthroughs (Chinese): [`docs/01-build-hang-postmortem.md`](docs/01-build-
 [`docs/04-build-speed.md`](docs/04-build-speed.md) ·
 [`docs/05-visual-regression.md`](docs/05-visual-regression.md) ·
 [`docs/07-vendored-lib-host-harness.md`](docs/07-vendored-lib-host-harness.md) ·
-[`docs/06-offline-fallback-case.md`](docs/06-offline-fallback-case.md).
+[`docs/06-offline-fallback-case.md`](docs/06-offline-fallback-case.md) ·
+[`docs/08-hardware-trace-sleuthing.md`](docs/08-hardware-trace-sleuthing.md) ·
+[`docs/09-list-view-recycling-scope.md`](docs/09-list-view-recycling-scope.md) ·
+[`docs/10-perf-attribution-discipline.md`](docs/10-perf-attribution-discipline.md).
 
 ## Known limitations
 
